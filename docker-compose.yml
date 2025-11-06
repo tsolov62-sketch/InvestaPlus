@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: investa
+      POSTGRES_PASSWORD: investa
+      POSTGRES_DB: investa
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgres://investa:investa@db:5432/investa
+      JWT_SECRET: investa_secret
+    ports:
+      - "4000:4000"
+    depends_on:
+      - db
+
+volumes:
+  db-data:
